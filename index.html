@@ -1,0 +1,634 @@
+<script>
+function ordenarTabla(columna) {
+  const tabla = document.getElementById("tabla-resultados");
+  const filas = Array.from(tabla.tBodies[0].rows);
+  const ths = tabla.querySelectorAll("th");
+
+  // Alternar orden
+  const ordenActual = tabla.getAttribute("data-orden") || "asc";
+  const ordenAscendente = ordenActual !== "asc";
+
+  // Quitar flechas anteriores
+  ths.forEach((th, i) => {
+    th.innerText = th.innerText.replace(/[\u25B2\u25BC]/g, "");
+    if (i === columna) {
+      th.innerText += ordenAscendente ? " ▲" : " ▼";
+    }
+  });
+
+  // Ordenar
+  filas.sort((a, b) => {
+    const xRaw = a.cells[columna].innerText.trim();
+    const yRaw = b.cells[columna].innerText.trim();
+
+    const x = normalizarDato(xRaw);
+    const y = normalizarDato(yRaw);
+
+    if (x instanceof Date && y instanceof Date) {
+      return ordenAscendente ? x - y : y - x;
+    }
+
+    if (typeof x === "number" && typeof y === "number") {
+      return ordenAscendente ? x - y : y - x;
+    }
+
+    if (typeof x === "string" && typeof y === "string") {
+      return ordenAscendente ? x.localeCompare(y) : y.localeCompare(x);
+    }
+
+    return 0;
+  });
+
+  // Reinsertar filas ordenadas
+  for (const fila of filas) {
+    tabla.tBodies[0].appendChild(fila);
+  }
+
+  // Actualizar atributos
+  tabla.setAttribute("data-orden", ordenAscendente ? "asc" : "desc");
+  tabla.setAttribute("data-columna", columna);
+}
+
+function normalizarDato(valor) {
+  valor = valor.trim();
+
+  // Fecha: dd-mm-yyyy o dd/mm/yyyy
+  const fechaRegex = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/;
+  const matchFecha = valor.match(fechaRegex);
+  if (matchFecha) {
+    const [_, d, m, y] = matchFecha;
+    const fullYear = y.length === 2 ? "20" + y : y;
+    return new Date(`${fullYear}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`);
+  }
+
+  // Números con símbolo "º" u otros
+  const numeroLimpio = valor.replace(/[^\d.-]/g, "");
+  if (!isNaN(numeroLimpio) && numeroLimpio !== "") {
+    return parseFloat(numeroLimpio);
+  }
+
+  // Texto por defecto
+  return valor.toLowerCase();
+}
+
+function ordenarTablaNumerica(columna) {
+  const tabla = document.getElementById("tabla-resultados-2");
+  const filas = Array.from(tabla.tBodies[0].rows);
+  const ths = tabla.querySelectorAll("th");
+
+  // Alternar orden
+  const ordenActual = tabla.getAttribute("data-orden") || "asc";
+  const ordenAscendente = ordenActual !== "asc";
+
+  // Limpiar flechas anteriores
+  ths.forEach((th, i) => {
+    th.innerText = th.innerText.replace(/[\u25B2\u25BC]/g, ""); // Quita ▲ ▼
+    if (i === columna) {
+      th.innerText += ordenAscendente ? " ▲" : " ▼";
+    }
+  });
+
+  // Ordenar
+  filas.sort((a, b) => {
+    const x = extraerNumero(a.cells[columna].innerText);
+    const y = extraerNumero(b.cells[columna].innerText);
+    return ordenAscendente ? x - y : y - x;
+  });
+
+  // Insertar filas ordenadas
+  for (const fila of filas) {
+    tabla.tBodies[0].appendChild(fila);
+  }
+
+  // Actualizar estado de orden
+  tabla.setAttribute("data-orden", ordenAscendente ? "asc" : "desc");
+  tabla.setAttribute("data-columna", columna);
+}
+
+function extraerNumero(texto) {
+  const limpio = texto.trim().replace(/[^\d.-]/g, "");
+  const numero = parseFloat(limpio);
+  return isNaN(numero) ? 0 : numero;
+}
+</script>
+
+
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+<!-- ---------------------------------------------------------COMIENZO HTML----------------------------------------------------- -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Presentación</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header>
+    <h1><a href="https://ratings.fide.com/profile/24510793" class="enlace-invisible">Andrés Luque Sáiz</a></h1>
+    <nav>
+      <!-- <a href="index.html">Inicio</a> -->
+      <a href="aje_metodologia.html">Metodología</a>
+      <a href="index.html">Experiencia como Jugador</a>
+      <a href="aje_experiencia_docente.html">Experiencia Docente</a>
+      <a href="aje_que_busco.html">Qué Busco</a>
+      <a href="aje_mejores_habilidades.html">Especialidades Ajedrecísticas</a>
+      <a href="aje_contacto.html">Contáctame</a>
+    </nav>
+
+    <a href="https://ratings.fide.com/profile/24510793" class="enlace-invisible"><img src="img/FIDE_azul.png" alt="Mi foto" class="avatar-FIDE"></a>
+    <a href="https://lichess.org/@/realygeorge" class="enlace-invisible"><img src="img/Ala_lichess.png" alt="Mi foto" class="avatar-lichess"></a>
+    <a href="index_en.html" title="English version" style="font-size: 24px; text-decoration: none;"><img src="img/UK.png" alt="Mi foto" class="avatar-UK"></a>    
+    <img src="img/europeo.jpeg" alt="Mi foto" class="avatar">
+
+  </header>
+
+  <main>
+    <h2>Acerca de mí</h2>
+
+    <p> Soy un joven Maestro FIDE Valenciano con un Elo entorno a los 2360 y 2 normas de IM. Empecé a competir desde muy pequeño y siempre he estado en el top nacional de mi categoría. Actualmente sigo compitiendo y desde el año 2024 he empezado entrenar a alumnos.</p>
+    <img src="img/yo_grafica.png" alt="grafica_FIDE" class="imagen-centrada">
+    <p>Llevo en el programa de <b>Tecnificación de la FACV</b> (Federación Valenciana de Ajedrez) más de 6 años y estuve durante 2 en el de la Federación Española.</p>
+
+    <h2> Estadísticas Generales </h2>
+
+    <dev class="tarjeta-horizontal-azul">
+     <table id="tabla-resultados-2">
+      <thead>
+        <tr>
+          <th onclick="ordenarTablaNumerica(0)">Año</th>
+          <th onclick="ordenarTablaNumerica(1)">Partidas Lentas</th>
+          <th onclick="ordenarTablaNumerica(2)">Partidas Rápidas</th>
+          <th onclick="ordenarTablaNumerica(3)">Partidas Blitz</th>
+          <th onclick="ordenarTablaNumerica(4)">Elo Máximo</th>
+        </tr>
+       </thead>
+      <tbody>
+        <tr>
+          <td> 2025</td>
+          <td> 47</td>
+          <td> 3</td>
+          <td> 8</td>
+          <td> 2368</td>
+        </tr>
+          <tr>
+          <td> 2024</td>
+          <td> 68</td>
+          <td> 44</td>
+          <td> 47</td>
+          <td> 2372</td>
+        </tr>
+        <tr>
+          <td> 2023</td>
+          <td> 114</td>
+          <td> 27</td>
+          <td> 35</td>
+          <td> 2371</td>
+        </tr>
+        <tr>
+          <td> 2022</td>
+          <td> 95</td>
+          <td> 25</td>
+          <td> 25</td>
+          <td> 2312</td>
+        </tr>
+        <tr>
+          <td> 2021</td>
+          <td> 96</td>
+          <td> 32</td>
+          <td> 31</td>
+          <td> 2307</td>
+        </tr>
+
+        <tr>
+          <td> 2020</td>
+          <td> 45</td>
+          <td> 0</td>
+          <td> 45</td>
+          <td> 2155</td>
+        </tr>
+
+        <tr>
+          <td> 2019</td>
+          <td> 67</td>
+          <td> 18</td>
+          <td> 14</td>
+          <td> 2140</td>
+        </tr>
+
+        <tr>
+          <td> 2018</td>
+          <td> 87</td>
+          <td> 9</td>
+          <td> 9</td>
+          <td> 2140</td>
+        </tr>
+
+        <tr>
+          <td> 2017</td>
+          <td> 75</td>
+          <td> 9</td>
+          <td> 0</td>
+          <td> 2094</td>
+        </tr>        
+        <tr>
+          <td> 2016</td>
+          <td> 66</td>
+          <td> 8</td>
+          <td> 7</td>
+          <td> 1819</td>
+        </tr>        
+        <tr>
+          <td> 2015</td>
+          <td> 49</td>
+          <td> 7</td>
+          <td> 0</td>
+          <td> 1583</td>
+        </tr>      
+        <tr>
+          <td> 2014</td>
+          <td> 27</td>
+          <td> 0</td>
+          <td> 0</td>
+          <td> 1568</td>
+        </tr> 
+        <tr>
+          <td> <b>TOTAL</b></td>
+          <td> <b>836</b></td>
+          <td> <b>182</b></td>
+          <td> <b>221</b></td>
+          <td> <b>2372</b></td>
+        </tr>           
+      </tbody>
+     </table>
+    </dev>
+
+    <h2>Resultados Destacados</h2>
+
+
+    <dev class="tarjeta-horizontal-verde">
+     <table id="tabla-resultados">
+      <thead>
+        <tr>
+          <th onclick="ordenarTabla(0)">Torneo</th>
+          <th onclick="ordenarTabla(1)">Fecha inicio</th>
+          <th onclick="ordenarTabla(2)">Fecha final</th>
+          <th onclick="ordenarTabla(3)">Ritmo</th>
+          <th onclick="ordenarTabla(4)">Clasificación</th>
+          <th onclick="ordenarTabla(5)">Performance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://info64.org/worls-youth-rapid-open-u14-2019/standings" class="enlace-invisible">Mundial sub14</a></td>
+          <td>11-09-2019</td>
+          <td>12-09-2019</td>
+          <td>15m+5s</td>
+          <td>4º</td>
+          <td>1839</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/vii-campeonato-iberoamericano-individual-absoluto/standings" class="enlace-invisible">Iberoamericano sub18</a></td>
+          <td>10-08-2019</td>
+          <td>18-08-2019</td>
+          <td>90min+30s+30m</td>
+          <td>4º</td>
+          <td>2176</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/xxxii-intl-chess-open-roquetas-de-mar-2021/standings" class="enlace-invisible">Open Internacional Roquetas</a></td>
+          <td>03-01-2021</td>
+          <td>06-01-2021</td>
+          <td>90min+30s</td>
+          <td>3º</td>
+          <td>2303</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/xix-gran-torneo-internacional-grupo-a-2022/standings" class="enlace-invisible">Open Internacional Gran Hotel Bali</a></td>
+          <td>03-12-2022</td>
+          <td>10-12-2022</td>
+          <td>90min+30s</td>
+          <td>3º</td>
+          <td>2341</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/viii-open-internacional-quart-2024/standings" class="enlace-invisible">Open Internacional Quart de Poblet</a></td>
+          <td>22-07-2024</td>
+          <td>28-07-2024</td>
+          <td>90min+30s</td>
+          <td>1º</td>
+          <td>2422</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://chess-results.com/tnr989841.aspx?lan=2&art=0&rd=7&turdet=YES" class="enlace-invisible">Europeo de Clubes</a></td>
+          <td>20-10-2024</td>
+          <td>26-10-2024</td>
+          <td>90min+30s+30m</td>
+          <td>16º</td>
+          <td>2412</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://s1.chess-results.com/tnrWZ.aspx?lan=1&art=0&rd=7&turdet=YES&flag=30&SNode=S0&tno=774133" class="enlace-invisible">Europeo de Clubes</a></td>
+          <td>01-10-2023</td>
+          <td>07-10-2023</td>
+          <td>90min+30s+30m</td>
+          <td>37º</td>
+          <td>2389</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/v-open-internacional-ciutat-de-sueca/standings" class="enlace-invisible">Open Internacional Sueca</a></td>
+          <td>22-07-2019</td>
+          <td>28-07-2019</td>
+          <td>90min+30s</td>
+          <td>3º</td>
+          <td>2277</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/ii-cerrado-de-promocion-fna/standings" class="enlace-invisible"><b>II Cerrado Promoción FNA</b></a></td>
+          <td>02-01-2022</td>
+          <td>09-01-2022</td>
+          <td>90min+30s</td>
+          <td>2º</td>
+          <td>2465</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/iv-magistral-internacional-ciudad-de-sant-joan-de-alacant/standings" class="enlace-invisible"><b>Cerrado Sant Joan d'Alacant</b></a></td>
+          <td>30-06-2025</td>
+          <td>04-07-2025</td>
+          <td>90min+30s</td>
+          <td>3º</td>
+          <td>2455</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://s1.chess-results.com/tnrWZ.aspx?lan=2&art=9&fed=ESP&turdet=YES&flag=30&snr=171&SNode=S0&tno=1093307" class="enlace-invisible">Interclubs C. Valenciana</a></td>
+          <td>11-01-2025</td>
+          <td>29-03-2025</td>
+          <td>90min+30s</td>
+          <td>3º</td>
+          <td>2419</td>
+        </tr>
+        <tr>
+          <td><a href="https://s1.chess-results.com/tnrWZ.aspx?lan=2&art=9&fed=ESP&turdet=YES&snr=88&tno=735359&SNode=S0" class="enlace-invisible"><b>Final Interclubs C. Valenciana</b></a></td>
+          <td>04-02-2023</td>
+          <td>01-04-2023</td>
+          <td>90min+30s</td>
+          <td>4º</td>
+          <td>2430</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=9&fed=ESP&turdet=YES&flag=30&snr=52&SNode=S0&tno=716673" class="enlace-invisible">Interclubs Norte C. Valenciana</a></td>
+          <td>14-01-2023</td>
+          <td>25-02-2023</td>
+          <td>90min+30s</td>
+          <td>1º</td>
+          <td>2496</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/campeonato-de-espana-rapido-sub18-2022/standings" class="enlace-invisible">C.E Rápidas sub18</a></td>
+          <td>06-08-2022</td>
+          <td>07-08-2022</td>
+          <td>10min+5s</td>
+          <td>3º</td>
+          <td>1951</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/campeonato-de-espana-sub-10-1-1/standings" class="enlace-invisible">C.E Rápidas sub10</a></td>
+          <td>04-07-2015</td>
+          <td>05-07-2015</td>
+          <td>10min+5s</td>
+          <td>5º</td>
+          <td>1453</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/campeonato-de-espana-sub-12-rapido-2017/standings" class="enlace-invisible">C.E Rápidas Sub12</a></td>
+          <td>15-07-2017</td>
+          <td>16-07-2017</td>
+          <td>10min+5s</td>
+          <td>4º</td>
+          <td>1588</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/team/x-copa-de-espana-por-equipos-sub-12-gran-hotel-bali/standings" class="enlace-invisible">Copa España Clubes sub12</a></td>
+          <td>02-12-2017</td>
+          <td>06-12-2017</td>
+          <td>90min+30s</td>
+          <td>1º</td>
+          <td>2094</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/team/campeonato-de-espana-por-selecciones-autonomicas-infantil-2018/standings" class="enlace-invisible">Selecciones Autonómicas sub14</a></td>
+          <td>26-06-2018</td>
+          <td>30-06-2018</td>
+          <td>90min+30s</td>
+          <td>1º</td>
+          <td>2012</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/team/xi-copa-de-espana-por-equipos-sub-18/standings" class="enlace-invisible">Copa España Clubes sub18</a></td>
+          <td>05-12-2018</td>
+          <td>09-12-2018</td>
+          <td>90min+30s</td>
+          <td>1º</td>
+          <td>2102</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/ce-sub-14-rapido-2019-212696/standings" class="enlace-invisible">C.E Rápidas sub14</a></td>
+          <td>13-07-2019</td>
+          <td>14-07-2019</td>
+          <td>10min+5s</td>
+          <td>1º</td>
+          <td>1918</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/team/ce-selecc-autonomicas-sub-14-2019-212688/standings" class="enlace-invisible">Selecciones Autonómicas sub14</a></td>
+          <td>22-06-2019</td>
+          <td>25-06-2019</td>
+          <td>90min+30s</td>
+          <td>4º</td>
+          <td>1970</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/ce-sub-16-2021/standings" class="enlace-invisible">C.E sub16</a></td>
+          <td>19-07-2021</td>
+          <td>24-07-2021</td>
+          <td>90min+30s</td>
+          <td>4º</td>
+          <td>2220</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/ce-sub-16-rapido-2021/standings" class="enlace-invisible">C.E Rápidas sub16</a></td>
+          <td>24-07-2021</td>
+          <td>25-07-2021</td>
+          <td>10min+5s</td>
+          <td>6º</td>
+          <td>1865</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/team/ce-selecciones-autonomicas-s16-2021/standings" class="enlace-invisible">Selecciones Autonómicas sub16</a></td>
+          <td>17-06-2021</td>
+          <td>20-06-2021</td>
+          <td>90min+30s</td>
+          <td>3º</td>
+          <td>2220</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/team/campeonato-de-espana-de-ajedrez-rapido-por-equipos-de-club-2024/standings" class="enlace-invisible">C.E Equipos Relámpago</a></td>
+          <td>25-08-2024</td>
+          <td>25-08-2024</td>
+          <td>10min+5s</td>
+          <td>4º</td>
+          <td>2248</td>
+        </tr>
+        <tr>
+          <td><a href="https://info64.org/team/campeonato-de-espana-por-equipos-de-club-de-segunda-division-2024/standings" class="enlace-invisible">CECLUBS 2ª</a></td>
+          <td>11-08-2024</td>
+          <td>16-08-2024</td>
+          <td>90min+30s</td>
+          <td>3º</td>
+          <td>2372</td>
+        </tr>
+
+        <tr>
+          <td><a href="https://info64.org/campeonato-de-espana-universitario-ajedrez-2025/standings" class="enlace-invisible">C.E Universitario Rápidas</a></td>
+          <td>08-04-2025</td>
+          <td>08-04-2025</td>
+          <td>10min+5s</td>
+          <td>6º</td>
+          <td>2344</td>
+        </tr>
+      </tbody>
+   </table>
+  </dev>
+    <h2> Campeonatos a Lentas Jugados desde 2017</h2>
+
+    <dev class="contenedor-grid">
+        <p> </p>
+        <h3><b>Campeonatos Internacionales</b></h3>
+        <p> </p>
+         <a href="https://info64.org/worls-youth-rapid-open-u14-2019/standings" target="_blank">World Rapid U14 Championship 2019</a>
+         <a href="https://info64.org/vii-campeonato-iberoamericano-individual-absoluto/standings" target="_blank">VII Iberoamericano</a>
+         <a href="https://info64.org/xxxii-intl-chess-open-roquetas-de-mar-2021/standings" target="_blank">XXXII Open Internacional Roquetas 2021</a>
+         <a href="https://info64.org/xix-gran-torneo-internacional-grupo-a-2022/standings" target="_blank">XIX Open Internacional Gran Hotel Bali 2022</a>
+         <a href="https://archive.chess-results.com/tnr638128.aspx?lan=2&art=1&rd=6" target="_blank">Open Internacional Crazalema 2022</a>
+         <a href="https://info64.org/viii-open-internacional-quart-2024/standings" target="_blank">V Open Internacional Quart de Poblet 2024</a>
+         <a href="https://chess-results.com/tnr989841.aspx?lan=2&art=0&rd=7&turdet=YES" target="_blank">38th Europeo de Clubes 2024</a>
+         <a href="https://archive.chess-results.com/tnr774133.aspx?lan=2&art=0&rd=7&turdet=YES&flag=30" target="_blank"> 39th Europeo de Clubes 2023</a>
+         <a href="https://info64.org/v-open-internacional-ciutat-de-sueca/standings" target="_blank">V Open Internacional Ciudad de Sueca 2019</a>
+         <a href="https://info64.org/iv-magistral-internacional-ciudad-de-sant-joan-de-alacant/standings" target="_blank">IV Magistral Sant Joan d'Alacant</a>
+         <a href="https://info64.org/vi-open-internacional-valencia-cuna-del-ajedrez/standings" target="_blank">VI Open Internacional Valencia Cuna</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=1&rd=9&fed=RUS&turdet=YES&flag=NO&SNode=S0&tno=1122408" target="_blank">41º Open Internacional Andorra</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=1&art=1&rd=9&turdet=YES&flag=30&SNode=S0&tno=951901" target="_blank">XXI Open Internacional Gran Hotel Bali</a>
+         <a href="https://info64.org/vi-magistral-de-mutxamel-norma-de-mi/standings" target="_blank">VI Magistral Muxtamel</a>
+         <a href="https://info64.org/v-open-internacional-valencia-cuna-del-ajedrez/standings" target="_blank">V Open Internacional Valencia Cuna</a>
+         <a href="https://s3.chess-results.com/tnrWZ.aspx?lan=1&art=1&rd=9&SNode=S0&tno=873262" target="_blank">XXXV Roquetas Chess Open</a>
+         <a href="https://info64.org/xx-open-internacional-gran-hotel-bali-grupo-a-2023/standings" target="_blank">XX Open Internacional Gran Hotel Bali</a>
+         <a href="https://info64.org/xvi-open-internacional-poble-de-montserrat-2023" target="_blank">XVI Open Internacional Poble de Montserrat</a>
+         <a href="https://info64.org/i-open-esphouses-guardamar-del-segura/standings" target="_blank">I Open Esphauses Guardamar del Segura</a>
+         <a href="https://info64.org/v-magistral-de-mutxamel-norma-de-mi/standings" target="_blank">V Magistral Mutxamel</a>
+         <a href="https://info64.org/vii-torneo-internacional-de-ajedrez-semana-santa-en-la-nucia/standings" target="_blank">VII Open Internacional Semana Santa</a>
+         <a href="https://info64.org/iii-open-internacional-de-ajedrez-dama-negra/standings" target="_blank">III Open Internacional de ajedrez Dama Negra</a>
+         <a href="https://info64.org/roquetas-chess-festival-2023-xxxiv-international-open/standings" target="_blank">XXXIV Open Internacional Roquetas</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&tno=682472" target="_blank">II Maxistral O teu Xacobeo</a>
+         <a href="https://info64.org/iii-open-internacional-valencia-cuna-del-ajedrez" target="_blank">III Open Internacional Valencia Cuna</a>
+         <a href="https://info64.org/viii-open-internacional-ciudad-de-oviedo/standings" target="_blank">VIII Open Internacional Ciudad de Oviedo</a>
+         <a href="https://info64.org/vi-open-internacional-de-ajedrez-semana-santa-torrevieja/standings" target="_blank">VI Open Internacional Semana Santa</a>
+         <a href="https://info64.org/viii-sunway-sitges-international-chess-festival-group-a/standings" target="_blank">VIII Sunway Sitges Internacional Chess Festival</a>
+         <a href="https://info64.org/ii-cerrado-de-promocion-fna/standings" target="_blank">II Cerrado Promoción FNA</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=1&rd=9&SNode=S0&tno=576961" target="_blank">47º Open Internacional La Roda</a>
+         <a href="https://info64.org/open-internacional-de-ajedrez-la-nucia-1/standings" target="_blank">Open Internacional La Nucía</a>
+         <a href="https://info64.org/torneo-magistral-norma-maestro-internacional/standings" target="_blank">Torneo Magistral Norma IM</a>
+         <a href="https://info64.org/v-open-semana-santa-alicante-2021/standings" target="_blank">V Open Semana Santa Alicante</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?SNode=S0&tno=537209" target="_blank">VII Sunway Sitges International chess festival</a>
+         <a href="https://info64.org/xxxi-international-chess-open-roquetas-de-mar/standings" target="_blank">XXXI Open Internacional Roquetas</a>
+         <a href="https://info64.org/vi-irt-sub-2200-ciudad-de-silla" target="_blank">VI IRT Ciudad de Silla</a>
+         <a href="https://info64.org/iv-torneo-semana-santa-alicante/standings" target="_blank">IV Open Semana Santa Alicante</a>
+         <a href="https://info64.org/vi-open-internacional-quart-de-poblet/luque-saiz-andres" target="_blank">VI Open Internacional Quart de Poblet</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=1&turdet=YES&flag=30&SNode=S0&tno=362243" target="_blank">IV Open Internacional Ciudad de Sueca</a>
+         <a href="https://info64.org/lii-open-int-villa-de-mislata-grupo-a-open/luque-saiz-andres" target="_blank">LII Open Villa de Mislata</a>
+         <a href="https://s1.chess-results.com/tnrWZ.aspx?lan=2&tno=355977" target="_blank">VII IRT Valencia origen dels escacs</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?art=1&lan=2&turdet=NO&flag=30&SNode=S0&tno=324705" target="_blank">45º Open Internacional La Roda</a>
+         <a href="https://info64.org/xi-festival-internacional-ciudad-de-manises/standings" target="_blank">XI Festival Internacional Ciudad de Manises</a>
+         <a href="https://info64.org/v-open-internacional-quart-de-poblet/standings" target="_blank">V Open Internacional Quart de Poblet</a>
+         <p></p>
+         <p></p>
+         <h3><b>Campeonatos Nacionales</b></h3>
+         <p></p>
+         <a href="https://info64.org/team/campeonato-de-espana-por-equipos-de-club-de-segunda-division-2024/standings" target="_blank">CECLUBS 2ª 2024</a>
+         <a href="https://info64.org/ce-sub18-2023/standings" target="_blank">CE sub18 2023</a>
+         <a href="https://info64.org/team/ce-club-segunda-division-2023" target="_blank">CECLUBS 2ª 2023</a>
+         <a href="https://info64.org/campeonato-de-espana-rapido-sub18-2022/standings" target="_blank">C.E sub18 2022</a>
+         <a href="https://info64.org/ce-absoluto-2022/standings" target="_blank">C. España 2022</a>
+         <a href="https://info64.org/ce-sub-18-2021/standings" target="_blank">CE sub18 2021</a>
+         <a href="https://info64.org/team/ce-por-equipos-segunda-2021/standings" target="_blank">CECLUBS 2ª 2021</a>
+         <a href="https://info64.org/ce-absoluto-2021/standings" target="_blank">CE Abosluto 2021</a>
+         <a href="https://info64.org/ce-sub-16-2021/standings" target="_blank">CE sub16 2021</a>
+         <a href="https://info64.org/team/ce-selecciones-autonomicas-s16-2021/standings" target="_blank">Nacional Selecciones Autonómicas 2021</a>
+         <a href="https://info64.org/ce-individual-absoluto-y-femenino/standings" target="_blank">CE Absoluto 2020</a>
+         <a href="https://info64.org/campeonato-de-espana-sub-16-2020_250242" target="_blank">CE sub16 2020</a>
+         <a href="https://info64.org/ce-individual-absoluto-y-femenino-2019/standings" target="_blank">CE Absoluto 2019</a>
+         <a href="https://info64.org/ce-sub-14-2019-212695/standings" target="_blank">CE sub14 2019</a>
+         <a href="https://info64.org/team/ce-selecc-autonomicas-sub-14-2019-212688/standings" target="_blank">Nacional Selecciones Autonómicas 2019</a>
+         <a href="https://info64.org/team/xi-copa-de-espana-por-equipos-sub-18/standings" target="_blank">XI Copa de España por Equipos sub18</a>
+         <a href="https://info64.org/team/campeonato-de-espana-por-selecciones-autonomicas-infantil-2018/standings" target="_blank">Nacional Selecciones autonómicas 2018</a>
+         <a href="https://info64.org/ce-individual-sub-14-2018-191771/standings" target="_blank">CE sub14 2018</a>
+         <a href="https://info64.org/team/x-copa-de-espana-por-equipos-sub-12-gran-hotel-bali/standings" target="_blank">X Copa de España por Equipos sub12</a>
+         <p></p> 
+         <p></p>
+         <p></p>
+         <h3><b>Campeonatos Autonómicos</b></h3>
+         <p></p>
+         <a href="https://s3.chess-results.com/tnrWZ.aspx?lan=2&SNode=S0&tno=1093307" target="_blank">Interclubs División de Honor 2025</a>
+         <a href="https://s1.chess-results.com/tnrWZ.aspx?lan=2&art=9&fed=ESP&turdet=YES&snr=88&tno=735359&SNode=S0" target="_blank">Final Interclubs DH 2024</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=9&fed=ESP&turdet=YES&flag=30&snr=52&SNode=S0&tno=716673" target="_blank">Interclubs DH Norte 2024</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=9&fed=ESP&turdet=YES&flag=30&snr=52&SNode=S0&tno=716673" target="_blank">Interclubs DH Sur 2023</a>
+         <a href="https://s3.chess-results.com/tnrWZ.aspx?lan=2&art=0&turdet=YES&flag=30&SNode=S0&tno=735359" target="_blank">Interclubs DH final 2023</a>
+         <a href="https://info64.org/campeonato-absoluto-cerrado-facv-2022/standings" target="_blank">Cerrado Autonómico FACV 2022</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=9&fed=ESP&turdet=YES&flag=30&snr=1&SNode=S0&tno=610481" target="_blank">Interclubs DH Norte 2022</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=0&fed=ESP&turdet=YES&flag=30&SNode=S0&tno=625936" target="_blank">Interclubs DH Descenso 2022</a>
+         <a href="https://info64.org/campeonato-autonomico-sub18-benidorm-2021/standings" target="_blank">Autonómico sub18 2021</a>
+         <a href="https://s3.chess-results.com/tnrWZ.aspx?lan=2&art=2&SNode=S0&tno=552912" target="_blank">División de Honor Centro</a>
+         <a href="https://s2.chess-results.com/tnrWZ.aspx?lan=2&art=9&fed=ESP&turdet=YES&flag=30&snr=42&SNode=S0&tno=494882" target="_blank">Interclubs DH 2020</a>
+         <a href="https://s3.chess-results.com/tnrWZ.aspx?lan=2&SNode=S0&tno=406751" target="_blank">Interclubs DH 2019</a>
+         <a href="https://info64.org/cto-autonomico-absoluto-abierto" target="_blank">Cto Autonómico 2018</a>
+         <p></p>
+         <p></p>
+         <p></p>
+         <h3><b>Campeonatos Provinciales</b></h3>
+         <p></p>
+         <a href="https://info64.org/campeonato-provincial-individual-valencia-sabado/standings" target="_blank">Provincial Valencia 2020</a>
+         <a href="https://info64.org/cto-provincial-individual-absoluto-valencia/standings" target="_blank">Provincial 2018</a>
+         <a href="https://info64.org/cto-provincial-individual-absoluto-valencia-2017/standings" target="_blank">Provincial Valencia 2017</a>
+
+         
+
+
+    </dev>
+
+  </main>
+
+  <footer>
+    <p>© 2025 - Andrés Luque Sáiz</p>
+  </footer>
+</body>
+</html>
