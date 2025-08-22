@@ -300,6 +300,16 @@ header {
   right: 140px;
 }
 
+.avatar-chesscom {
+  width: 80px;
+  height: 60px;
+  border-radius: 50%; /* hace el círculo */
+  object-fit: cover;   /* recorta bien si la imagen no es cuadrada */
+  position: absolute;
+  top: 60px;
+  right: 330px;
+}
+
 .avatar-UK {
   width: 30px;
   height: 30px;
